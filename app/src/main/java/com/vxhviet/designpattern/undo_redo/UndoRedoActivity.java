@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.vxhviet.designpattern.R;
 import com.vxhviet.designpattern.undo_redo.command.Command;
 import com.vxhviet.designpattern.undo_redo.command.CommandExecutor;
-import com.vxhviet.designpattern.undo_redo.command.DefaultCommandTarget;
 import com.vxhviet.designpattern.undo_redo.command.UndoableSampleCommand;
 import com.vxhviet.designpattern.undo_redo.memento.Caretaker;
 import com.vxhviet.designpattern.undo_redo.memento.GenericMemento;
@@ -30,6 +29,9 @@ import java.util.ArrayList;
  * http://codinginflipflops.com/post/48718235248/patterns-to-implement-undoredo-feature-part-1
  * http://codinginflipflops.com/post/48729281071/patterns-to-implement-undoredo-feature-part-2
  * http://www.journaldev.com/1734/memento-design-pattern-java
+ * https://www.codeproject.com/Articles/33384/Multilevel-Undo-and-Redo-Implementation-in-Cshar
+ * https://www.codeproject.com/Articles/33397/Multilevel-Undo-and-Redo-Implementation-in-Csharp
+ *
  */
 
 public class UndoRedoActivity extends AppCompatActivity implements Originator {
@@ -83,13 +85,17 @@ public class UndoRedoActivity extends AppCompatActivity implements Originator {
 
         mListView = (ListView) findViewById(R.id.listView);
 
-        //testCommand();
-        testMemento();
+        testCommand();
+        //testMemento();
     }
 
     private void testCommand() {
-        DefaultCommandTarget migration = new DefaultCommandTarget(0);
-        final Command cmd = new UndoableSampleCommand(migration);
+        mUndoButton.setVisibility(View.VISIBLE);
+        mRedoButton.setVisibility(View.VISIBLE);
+        mDoButton.setVisibility(View.VISIBLE);
+        mTextView.setText("0");
+
+        final Command cmd = new UndoableSampleCommand(mTextView);
         final CommandExecutor exec = new CommandExecutor(5);
 
         mDoButton.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +121,10 @@ public class UndoRedoActivity extends AppCompatActivity implements Originator {
     }
 
     private void testMemento() {
+        for(Button b: mButtonList){
+            b.setVisibility(View.VISIBLE);
+        }
+
         final ArrayAdapter adapter = new ArrayAdapter(this, R.layout.item, mStateList);
         mListView.setAdapter(adapter);
 
